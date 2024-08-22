@@ -10,6 +10,7 @@ import (
 	"github.com/gojek/heimdall/v7"
 	"github.com/gojek/valkyrie"
 	"github.com/pkg/errors"
+	"go.elastic.co/apm/module/apmhttp"
 )
 
 // Client is the http client implementation
@@ -42,9 +43,14 @@ func NewClient(opts ...Option) *Client {
 	}
 
 	if client.client == nil {
-		client.client = &http.Client{
+		clientz := &http.Client{
 			Timeout: client.timeout,
 		}
+		clientz.Transport = apmhttp.WrapRoundTripper(clientz.Transport)
+
+		client.client = clientz
+
+
 	}
 
 	return &client
