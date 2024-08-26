@@ -8,23 +8,24 @@
   <a href="https://coveralls.io/github/gojek/heimdall?branch=master"><img src="https://coveralls.io/repos/github/gojek/heimdall/badge.svg?branch=master"></img></a>
 </p>
 
-* [Description](#description)
-* [Installation](#installation)
-* [Usage](#usage)
-  + [Making a simple `GET` request](#making-a-simple-get-request)
-  + [Creating a hystrix-like circuit breaker](#creating-a-hystrix-like-circuit-breaker)
-  + [Creating a hystrix-like circuit breaker with fallbacks](#creating-a-hystrix-like-circuit-breaker-with-fallbacks)
-  + [Creating an HTTP client with a retry mechanism](#creating-an-http-client-with-a-retry-mechanism)
-  + [Custom retry mechanisms](#custom-retry-mechanisms)
-  + [Custom HTTP clients](#custom-http-clients)
-* [Plugins](#plugins)
-* [Documentation](#documentation)
-* [FAQ](#faq)
-* [License](#license)
+- [Description](#description)
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Making a simple `GET` request](#making-a-simple-get-request)
+  - [Creating a hystrix-like circuit breaker](#creating-a-hystrix-like-circuit-breaker)
+  - [Creating a hystrix-like circuit breaker with fallbacks](#creating-a-hystrix-like-circuit-breaker-with-fallbacks)
+  - [Creating an HTTP client with a retry mechanism](#creating-an-http-client-with-a-retry-mechanism)
+  - [Custom retry mechanisms](#custom-retry-mechanisms)
+  - [Custom HTTP clients](#custom-http-clients)
+- [Plugins](#plugins)
+- [Documentation](#documentation)
+- [FAQ](#faq)
+- [License](#license)
 
 ## Description
 
 Heimdall is an HTTP client that helps your application make a large number of requests, at scale. With Heimdall, you can:
+
 - Use a [hystrix-like](https://github.com/afex/hystrix-go) circuit breaker to control failing requests
 - Add synchronous in-memory retries to each request, with the option of setting your own retrier strategy
 - Create clients with different timeouts for every request
@@ -32,8 +33,9 @@ Heimdall is an HTTP client that helps your application make a large number of re
 All HTTP methods are exposed as a fluent interface.
 
 ## Installation
+
 ```
-go get -u github.com/gojek/heimdall/v7
+go get -u github.com/Furiady/heimdall/v7
 ```
 
 ## Usage
@@ -43,10 +45,11 @@ go get -u github.com/gojek/heimdall/v7
 This package can be used by adding the following import statement to your `.go` files.
 
 ```go
-import "github.com/gojek/heimdall/v7/httpclient" 
+import "github.com/Furiady/heimdall/v7/httpclient"
 ```
 
 ### Making a simple `GET` request
+
 The below example will print the contents of the google home page:
 
 ```go
@@ -88,7 +91,7 @@ fmt.Println(string(body))
 To import hystrix package of heimdall.
 
 ```go
-import "github.com/gojek/heimdall/v7/hystrix"
+import "github.com/Furiady/heimdall/v7/hystrix"
 ```
 
 You can use the `hystrix.NewClient` function to create a client wrapped in a hystrix-like circuit breaker:
@@ -126,7 +129,6 @@ func(err error) error {
     return err
 }
 ```
-
 
 **Example**
 
@@ -179,6 +181,7 @@ client := httpclient.NewClient(
 
 // The rest is the same as the first example
 ```
+
 Or create client with exponential backoff
 
 ```go
@@ -252,6 +255,7 @@ client := httpclient.NewClient(
 ```
 
 Heimdall also allows you to simply pass a function that returns the retry timeout. This can be used to create the client, like:
+
 ```go
 linearRetrier := NewRetrierFunc(func(retry int) time.Duration {
 	if retry <= 0 {
@@ -307,12 +311,12 @@ client := httpclient.NewClient(
 
 ## Plugins
 
-To add a plugin to an existing client, use the `AddPlugin` method of the client. 
+To add a plugin to an existing client, use the `AddPlugin` method of the client.
 
 An example, with the [request logger plugin](/plugins/request_logger.go):
 
 ```go
-// import "github.com/gojek/heimdall/v7/plugins"
+// import "github.com/Furiady/heimdall/v7/plugins"
 
 client := heimdall.NewHTTPClient(timeout)
 requestLogger := plugins.NewRequestLogger(nil, nil)
@@ -340,7 +344,7 @@ For a simple example on how to write plugins, look at the [request logger plugin
 
 ## Documentation
 
-Further documentation can be found on [pkg.go.dev](https://pkg.go.dev/github.com/gojek/heimdall/v7)
+Further documentation can be found on [pkg.go.dev](https://pkg.go.dev/github.com/Furiady/heimdall/v7)
 
 ## FAQ
 
@@ -355,6 +359,7 @@ Yes, you can. Heimdall implements the standard [HTTP Do](https://golang.org/pkg/
 If you are making a large number of HTTP requests, or if you make requests among multiple distributed nodes, and wish to make your systems more fault tolerant, then Heimdall was made for you.
 
 Heimdall makes use of [multiple mechanisms](https://medium.com/@sohamkamani/how-to-handle-microservice-communication-at-scale-a6fb0ee0ed7) to make HTTP requests more fault tolerant:
+
 1. Retries - If a request fails, Heimdall retries behind the scenes, and returns the result if one of the retries are successful.
 2. Circuit breaking - If Heimdall detects that too many of your requests are failing, or that the number of requests sent are above a configured threshold, then it "opens the circuit" for a short period of time, which prevents any more requests from being made. _This gives your downstream systems time to recover._
 
